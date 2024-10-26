@@ -28,7 +28,7 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
   return (
-    <div className="bg-white w-6xl mx-32 px-16 my-16 h-full shadow-md rounded-xl flex flex-col">
+    <div className="bg-white w-full md:w-6xl mx-2 md:mx-32 px-4 md:px-16 my-16 h-full shadow-md rounded-xl flex flex-col">
       <button
         onClick={() => setTasks([])}
         className="bg-red-500 text-white p-2 rounded-lg max-w-32 my-4 right-0"

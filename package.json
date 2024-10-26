@@ -2,14 +2,13 @@
   "name": "todo",
   "private": true,
   "version": "0.0.2",
-  "homepage": "https://zed-magdy.github.io/soma",
+  "homepage": "https://zed-magdy.github.io/soma/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
