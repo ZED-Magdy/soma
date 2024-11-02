@@ -26,6 +26,7 @@ function App() {
     toast({
       title: "Task Created",
       description: `Task ${text} has been created successfully`,
+      duration: 3000,
     });
   };
   const submitOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -105,6 +106,7 @@ function App() {
     toast({
       title: "Tasks Cleared",
       description: `All tasks have been cleared successfully`,
+      duration: 3000,
     });
   }
 
@@ -118,6 +120,7 @@ function App() {
         description: `Task ${task.text} has been marked as ${
           task.isDone ? "undone" : "done"
         }`,
+        duration: 3000,
       });
     };
   }
@@ -128,6 +131,7 @@ function App() {
       toast({
         title: "Task Deleted",
         description: `Task ${task.text} has been deleted successfully`,
+        duration: 3000,
       });
     };
   }
