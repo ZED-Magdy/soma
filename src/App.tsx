@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-
+import { Button } from "./components/ui/button";
+import { Card } from "./components/ui/card";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "./components/ui/input";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
 interface Task {
   id: number;
   text: string;
@@ -13,10 +18,15 @@ function App() {
       : []
   );
   const [text, setText] = useState<string>("");
+  const { toast } = useToast();
   const createTask = () => {
     if (!text) return;
     setTasks([...tasks, { id: tasks.length, text, isDone: false }]);
     setText("");
+    toast({
+      title: "Task Created",
+      description: `Task ${text} has been created successfully`,
+    });
   };
   const submitOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -28,62 +38,99 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
   return (
-    <div className="bg-white w-full md:w-6xl mx-2 md:mx-32 px-4 md:px-16 my-16 h-full shadow-md rounded-xl flex flex-col">
-      <button
-        onClick={() => setTasks([])}
-        className="bg-red-500 text-white p-2 rounded-lg max-w-32 my-4 right-0"
-      >
-        Clear All
-      </button>
+    <Card className=" mx-2 px-4 md:px-16 my-16 flex flex-col">
+      <div className="w-full flex justify-end">
+        <Button
+          variant={"destructive"}
+          onClick={clearAllTasks}
+          className="max-w-32 my-4 right-0"
+        >
+          Clear All
+        </Button>
+      </div>
       <div className="flex flex-col gap-4">
-        <label className="text-lg" htmlFor="task_input">
+        <Label className="text-lg" htmlFor="task_input">
           Add Task
-        </label>
-        <input
+        </Label>
+        <Input
           id="task_input"
           onKeyDown={submitOnEnter}
           onChange={(e) => setText(e.target.value)}
           value={text}
-          className="border-2 border-gray-300 p-2 rounded-lg w-full"
+          className="w-full"
           placeholder="Enter your task here"
         />
       </div>
 
       <div className="flex flex-col gap-4 mt-4 py-4">
         {tasks.map((task, index) => (
-          <div key={index} className="flex flex-row justify-between">
-            <p className={task.isDone ? "line-through text-lg" : "text-lg"}>
+          <div
+            key={index}
+            className="flex flex-row justify-between items-center"
+          >
+            <Label
+              className={
+                task.isDone
+                  ? "line-through text-sm md:text-lg"
+                  : "text-sm md:text-lg"
+              }
+            >
               {task.text}
-            </p>
+            </Label>
             <div className="flex flex-row justify-end gap-4">
-              <button
+              <Button
+                variant={"default"}
                 className={
                   task.isDone
-                    ? "bg-blue-500 text-white p-2 rounded-lg"
-                    : "bg-green-500 text-white p-2 rounded-lg"
+                    ? "text-white bg-blue-500"
+                    : "text-white bg-green-500"
                 }
-                onClick={() =>
-                  setTasks(
-                    tasks.map((t) =>
-                      t.id === task.id ? { ...t, isDone: !t.isDone } : t
-                    )
-                  )
-                }
+                onClick={toggleTaskCompletion(task)}
               >
                 {task.isDone ? "Undone" : "Done"}
-              </button>
-              <button
-                onClick={() => setTasks(tasks.filter((t) => t.id !== task.id))}
-                className="bg-red-500 text-white p-2 rounded-lg"
-              >
+              </Button>
+              <Button variant={"destructive"} onClick={deleteTask(task)}>
                 Delete
-              </button>
+              </Button>
             </div>
           </div>
         ))}
       </div>
-    </div>
+      <Toaster />
+    </Card>
   );
+
+  function clearAllTasks() {
+    setTasks([]);
+    toast({
+      title: "Tasks Cleared",
+      description: `All tasks have been cleared successfully`,
+    });
+  }
+
+  function toggleTaskCompletion(task: Task) {
+    return () => {
+      setTasks(
+        tasks.map((t) => (t.id === task.id ? { ...t, isDone: !t.isDone } : t))
+      );
+      toast({
+        title: "Task Updated",
+        description: `Task ${task.text} has been marked as ${
+          task.isDone ? "undone" : "done"
+        }`,
+      });
+    };
+  }
+
+  function deleteTask(task: Task) {
+    return () => {
+      setTasks(tasks.filter((t) => t.id !== task.id));
+      toast({
+        title: "Task Deleted",
+        description: `Task ${task.text} has been deleted successfully`,
+      });
+    };
+  }
 }
 
 export default App;
